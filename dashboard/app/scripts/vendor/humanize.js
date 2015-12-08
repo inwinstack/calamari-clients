@@ -421,7 +421,7 @@
     if (filesize <= 0) { return '0 bytes'; }
 
     var thresholds = [1];
-    var units = ['bytes', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb'];
+    var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
     if (filesize < kilo) { return humanize.numberFormat(filesize, 0) + ' ' + units[0]; }
 
     for (var i = 1; i < units.length; i++) {
