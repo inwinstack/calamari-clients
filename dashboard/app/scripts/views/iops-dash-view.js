@@ -8,8 +8,9 @@ define([
         'dygraphs',
         'helpers/graph-utils',
         'helpers/gauge-helper',
+        'l20nCtx!locales/{{locale}}/strings',
         'marionette'
-], function($, _, Backbone, JST, Dygraph, gutils, gaugeHelper) {
+], function($, _, Backbone, JST, Dygraph, gutils, gaugeHelper, l10n) {
     'use strict';
 
     var IopsDashView = Backbone.Marionette.ItemView.extend({
@@ -22,6 +23,10 @@ define([
         },
         initialize: function() {
             this.Dygraph = Dygraph;
+            this.model = new Backbone.Model({
+                title: l10n.getSync('DashIOPSTitle'),
+                subline: l10n.getSync('DashIOPSSubline')
+            });
             this.App = Backbone.Marionette.getOption(this, 'App');
 
             gaugeHelper(this);
