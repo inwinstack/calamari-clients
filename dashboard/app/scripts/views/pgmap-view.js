@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'kinetic', 'loglevel', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize, Kinetic, log) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'humanize', 'kinetic', 'loglevel', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, gaugeHelper, humanize, Kinetic, log, l10n) {
     'use strict';
 
     // ##PgmapView
@@ -51,6 +51,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.listenTo(this, 'renderMap', this.renderMap);
             this.collection = new Backbone.Collection();
+            this.model = new Backbone.Model({
+                title: l10n.getSync('DashPGStatusTitle'),
+                subline: l10n.getSync('DashPGStatusSubline')
+            });
             if (this.App) {
                 this.ReqRes = Backbone.Marionette.getOption(this.App, 'ReqRes');
                 this.listenTo(this.App.vent, 'filter:update', this.fetchOSDPGCount);
