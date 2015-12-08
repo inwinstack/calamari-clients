@@ -14,7 +14,7 @@ define(['require', 'module'], function(require, module) {
         extension: 'l20n',
         prefix: '{{',
         suffix: '}}',
-        locale: 'en'
+        locale: 'zh_tw'
     };
 
     var l20nPlugin = {};
