@@ -58,8 +58,11 @@
 		color: darken($itlightgray, 15%);
 	}
 }
+.navbar-brand{
+        height: auto;
+}
 .navbar .navbar-nav > li > a {
-	padding: 15px 0 10px 15px;
+	padding: 15px;
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
     min-height: 48px;
@@ -69,6 +72,12 @@
 	}
 	&:active {
 	}
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #fff;
+  background-color: transparent;
 }
 .dropdown-menu .divider {
 	background-color: darkgray;
