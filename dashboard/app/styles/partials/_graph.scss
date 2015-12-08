@@ -1,8 +1,9 @@
 $itapp-font-family: 'Titillium Web', sans-serif;
 $itapp-font-weight-normal: 400;
 $itapp-font-weight-light: 300;
+
 .graph-mode {
-    color: $itlightgray;
+    color: $moe-dark;
     font-family: $itapp-font-family;
 	font-weight: $itapp-font-weight-normal;
     h1 {
@@ -15,7 +16,7 @@ $itapp-font-weight-light: 300;
     padding: 0;
     z-index: 100;
     height: 1000px;
-    background-color: $itdarkgray;
+    background-color: $moe-white;
     @include box-shadow(0 0 0);
 }
 
@@ -35,7 +36,7 @@ $itapp-font-weight-light: 300;
 }
 
 .graph-title {
-	color: $itlightgray;
+	color: $moe-dark;
 	top: -1.5em;
 	left: 0;
 	font-size: 16px;
