@@ -8,6 +8,23 @@
 <dashboardTitle "Dashboard">
 <manageTitle "Management">
 <healthOSDTitle "Health">
+<DashOSDTitle "OSD">
+<DashOSDSubline "In & Up">
+<DashMonTitle "Monitors">
+<DashMonSubline "Quorum">
+<DashPoolsTitle "Pools">
+<DashPoolsSubline "Active">
+<DashPGStatusTitle "Placement Group Status">
+<DashPGStatusSubline "Active & Clean">
+<DashIOPSTitle "IOPS">
+<DashIOPSSubline "Reads + Writes">
+<DashUsageTitle "Usage">
+<DashUsageUsed "Used">
+<DashHostsTitle "Hosts">
+<DashHostsSubline "Reporting">
+<DashHostsSubtextMon "MON">
+<DashHostsSubtextAnd " /">
+<DashHostsSubtextOSD "OSD">
 <pleaseContactAdmin "Please contact Administrator">
 <serverErrorMessage """
 Server Error {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}
