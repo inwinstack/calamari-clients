@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, gaugeHelper) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, gaugeHelper, l10n) {
     'use strict';
 
     var OsdDashView = Backbone.Marionette.ItemView.extend({
@@ -22,7 +22,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
             }
-            this.model = new Backbone.Model();
+            this.model = new Backbone.Model({
+                title: l10n.getSync('DashOSDTitle')
+            });
             gaugeHelper(this);
         },
         set: function(model) {
@@ -64,7 +66,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
             if (_.isNumber(critical)) {
                 count += critical;
             }
-            this.ui.subline.text('In & Up');
+            this.ui.subline.text(l10n.getSync('DashOSDSubline'));
             if (warn || critical) {
                 this.ui.subtext.text(this.subtextTemplate({
                     down: down
