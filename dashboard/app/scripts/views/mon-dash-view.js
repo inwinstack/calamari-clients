@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, gaugeHelper) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, gaugeHelper, l10n) {
     'use strict';
 
     var OsdDashView = Backbone.Marionette.ItemView.extend({
@@ -16,7 +16,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/gauge-helper',
         },
         initialize: function() {
             _.bindAll(this, 'set', 'updateModel', 'updateView');
-            this.model = new Backbone.Model();
+            this.model = new Backbone.Model({
+                title: l10n.getSync('DashMonTitle'),
+                subline: l10n.getSync('DashMonSubline')
+            });
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'status:update', this.set);
