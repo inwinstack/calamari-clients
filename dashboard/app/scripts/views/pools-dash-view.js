@@ -6,8 +6,9 @@ define(['jquery',
         'templates',
         'helpers/gauge-helper',
         'collections/pool-collection',
+        'l20nCtx!locales/{{locale}}/strings',
         'marionette'
-], function($, _, Backbone, JST, gaugeHelper, PoolCollection) {
+], function($, _, Backbone, JST, gaugeHelper, PoolCollection, l10n) {
     'use strict';
 
     var PoolsDashView = Backbone.Marionette.ItemView.extend({
@@ -31,6 +32,10 @@ define(['jquery',
             }
             this.collection = new PoolCollection({
                 cluster: this.cluster
+            });
+            this.model = new Backbone.Model({
+                title: l10n.getSync('DashPoolsTitle'),
+                subline: l10n.getSync('DashPoolsSubline')
             });
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
