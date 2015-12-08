@@ -1,6 +1,6 @@
 /*global define*/
 /* jshint -W106, -W069*/
-define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'helpers/animation', 'helpers/gauge-helper', 'marionette'], function($, _, Backbone, JST, Gauge, humanize, animation, gaugeHelper) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'helpers/animation', 'helpers/gauge-helper', 'l20nCtx!locales/{{locale}}/strings', 'marionette'], function($, _, Backbone, JST, Gauge, humanize, animation, gaugeHelper, l10n) {
     'use strict';
 
     /* UsageView
@@ -26,7 +26,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
         },
         serializeData: function() {
             return {
-                title: this.title
+                title: l10n.getSync('DashUsageTitle'),
+                used: l10n.getSync('DashUsageUsed')
             };
         },
         initialize: function(options) {
@@ -50,7 +51,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'gauge', 'humanize', 'h
                 generateGradient: true,
                 highDpiSupport: false
             });
-            this.title = options.title === undefined ? 'Untitled' : options.title;
             this.listenToOnce(this, 'render', this.postRender);
             gaugeHelper(this, 'usage');
         },
