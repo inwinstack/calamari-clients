@@ -12,7 +12,7 @@
 // });
 // ```
 //
-define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts-view', 'views/osd-dash-view', 'views/mon-dash-view', 'views/pgmap-view', 'views/status-line-view', 'views/osd-hex-view', 'views/hosts-dash-view', 'views/pools-dash-view', 'views/iops-dash-view', 'views/health-view', 'views/type-one-view', 'views/dashboard-row', 'views/user-request-view', 'views/notification-bell-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd, mon, pg, statusLine, osdHex, hosts, pools, iops, health, typeOne, dashboardRow, userRequestView, notificationBellView) {
+define(['views/notification-card-view', 'views/notification-collection-view', 'views/notification-item-view', 'views/osd-detail-view', 'views/osd-visualization', 'views/usage-view', 'views/gauges-layout', 'views/breadcrumb-view', 'views/alerts-view', 'views/osd-dash-view', 'views/mon-dash-view', 'views/pgmap-view', 'views/status-line-view', 'views/osd-hex-view', 'views/hosts-dash-view', 'views/pools-dash-view', 'views/iops-dash-view', 'views/health-view', 'views/type-one-view', 'views/dashboard-row', 'views/user-request-view', 'views/notification-bell-view', 'views/alert-manage-view'], function(noticard, noticoll, notiitem, osddetail, osdviz, usage, gauges, breadcrumb, alerts, osd, mon, pg, statusLine, osdHex, hosts, pools, iops, health, typeOne, dashboardRow, userRequestView, notificationBellView, alertManageView) {
     return {
         NotificationCardView: noticard,
         NotificationCollectionView: noticoll,
@@ -35,6 +35,7 @@ define(['views/notification-card-view', 'views/notification-collection-view', 'v
         TypeOneView: typeOne,
         DashboardRow: dashboardRow,
         UserRequestView: userRequestView,
-        NotificationBellView: notificationBellView
+        NotificationBellView: notificationBellView,
+        AlertManageView: alertManageView
     };
 });
