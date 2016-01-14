@@ -8,7 +8,8 @@
                 dashboard: 'DASHBOARD',
                 bench: 'WORKBENCH',
                 chart: 'GRAPHS',
-                manage: 'MANAGE'
+                manage: 'MANAGE',
+                alertmanage: 'ALERT'
             };
             $scope.dashboard = function() {
                 document.location = '/dashboard/';
@@ -18,6 +19,9 @@
             };
             $scope.graph = function() {
                 document.location = '/dashboard/?target=graph';
+            };
+            $scope.alertmanage = function() {
+                document.location = '/dashboard/?target=alertmanage';
             };
         };
         return ['$log', '$scope', NavbarController];

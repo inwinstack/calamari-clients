@@ -1,0 +1,42 @@
+<div class="alert-card <%- cardClass %>">
+	<div class="alert-card-heading">
+		<div class="inline-block">
+			<h5 class="alert-card-title"><%- title %></h5>
+		</div>
+		
+		<div class="pull-right alert-status-icon alert-status-pending <%- statusPendingClass %>">
+			<i class="fa fa-clock-o fa-lg"></i><div><%- alertStatusPending %></div>
+		</div>
+		<div class="pull-right alert-status-icon alert-status-resolved <%- statusResolvedClass %>">
+			<i class="fa fa-check-circle-o fa-lg"></i><div><%- alertStatusResolved %></div>
+		</div>
+	</div>
+	<div class="alert-card-body">
+		<div class="alert-detail clearfix">
+			<div class="pull-left">
+				<span><%- titleCount %></span>
+			</div>
+			<div class="pull-right alert-detail-note">
+				<span><%- count %></span>
+			</div>
+		</div>
+
+		<div class="alert-detail clearfix">
+			<div class="pull-left">
+				<span><%- titleTriggered %></span>
+			</div>
+			<div class="pull-right alert-detail-note">
+				<span><%- triggered %></span>
+			</div>
+		</div>
+
+		<div class="alert-detail clearfix <%- resolvedClass %>">
+			<div class="pull-left">
+				<span><%- titleResolved %></span>
+			</div>
+			<div class="pull-right alert-detail-note">
+				<span><%- resolved %></span>
+			</div>
+		</div>
+	</div>
+</div>

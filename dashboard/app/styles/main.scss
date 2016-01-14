@@ -22,6 +22,9 @@
 // Application Specific Styles
 @import 'partials/base';
 
+@import 'partials/settings_card';
+@import 'partials/alert_card';
+
 .navbar-brand {
 	padding: 9px 15px;
 }

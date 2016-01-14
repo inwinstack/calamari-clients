@@ -1,0 +1,75 @@
+
+$cad-background-color: #fcfcfc;
+$cad-title-color: #555;
+$cad-detail-color: #999;
+$card-hr: #eee;
+$card-padding: 8px;
+$status-warning-color: #f7b500;
+$status-error-color: #e63427;
+$status-resolved-color: #39c0ed;
+
+.alert-card {
+    background: $cad-background-color;
+    border: 2px solid #d9d9d9;
+    border-radius: 4px;
+    min-width: 300px;
+    margin: 10px 0;
+    padding: $card-padding 12px;
+}
+
+.alert-card.status-warning {
+    border: 2px solid $status-warning-color;
+}
+
+.alert-card.status-error {
+    border: 2px solid $status-error-color;
+}
+
+.alert-card-heading {
+    border-bottom: 1px solid $card-hr;
+    padding: 8px 0;
+}
+
+.alert-card-title {
+    color: $cad-title-color;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 20px;
+    word-break: break-all;
+}
+
+.alert-card-body {
+    padding-top: $card-padding;
+}
+
+.alert-detail {
+    color: $cad-title-color;
+    font-weight: bold;
+    padding: $card-padding 0;
+}
+
+.alert-detail-note {
+    color: $cad-detail-color;
+    font-weight: normal;
+}
+
+.alert-status-icon {
+    padding: 0 5px;
+    text-align: center;
+}
+
+.alert-status-pending {
+    color: $status-error-color;
+}
+
+.alert-status-resolved {
+    color: $status-error-color;
+}
+
+.alert-status-resolved {
+    color: $status-resolved-color;
+}
+
+.inline-block {
+    display: inline-block;
+}

@@ -1,0 +1,203 @@
+<div class="row" style="margin-top: 10px;">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<div class="navbar navbar-default disable-user-select" role="navigation">
+			<div class="navbar-header">
+				<div class="navbar-brand" style="margin-top: 5px;"><i class="fa fa-exclamation-triangle fa-lg"></i></div>
+			</div>
+			
+			<ul class="nav navbar-nav switch-page" style="margin-top: 5px;">
+				<li class="alert-settings"><a href="#settings"><%- settings %></a></li>
+				<li class="alert-history"><a href="#history"><%- history %></a></li>
+			</ul>
+		</div>
+		
+		<div id="alert-settings">
+			<div class="settings-card">
+				<div class="settings-card-title">
+					<h3><%- notifications %></h3>
+				</div>
+				
+				<div class="settings-card-body clearfix">
+					<div class="pull-left">
+						<h4><%- email %></h4>
+						<span class="email-message"></span>
+					</div>
+					
+					<div class="pull-right">
+						<div class="email-switch switch-small" data-on="primary" data-off="default">
+						  <input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="settings-card">
+				<div class="settings-card-title">
+					<h3><%- timePeriod %></h3>
+				</div>
+				
+				<div class="settings-card-body normalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- normalStatusPeriod %></h4>
+						<span class="normal-message"></span>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">sec</span>
+						<div class="pull-right normal-sec-select"></div>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">min</span>
+						<div class="pull-right normal-min-select"></div>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">hr</span>
+						<div class="pull-right normal-hr-select"></div>
+					</div>
+				</div>
+				
+				<div class="settings-card-body abnormalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- abnormalStatusPeriod %></h4>
+						<span class="abnormal-message"></span>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">sec</span>
+						<div class="pull-right abnormal-sec-select"></div>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">min</span>
+						<div class="pull-right abnormal-min-select"></div>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">hr</span>
+						<div class="pull-right abnormal-hr-select"></div>
+					</div>
+				</div>
+				
+				<div class="settings-card-body serverPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- serverAbnormalStatusPeriod %></h4>
+						<span class="server-message"></span>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">sec</span>
+						<div class="pull-right server-sec-select"></div>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">min</span>
+						<div class="pull-right server-min-select"></div>
+					</div>
+					
+					<div class="settings-group">
+						<span class="pull-right">hr</span>
+						<div class="pull-right server-hr-select"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="settings-card">
+				<div class="settings-card-title">
+					<h3><%- alertTrigger %></h3>
+				</div>
+				
+				<div class="settings-card-sub-title">
+					<span><%- osd %></span>
+				</div>
+				
+				<div class="settings-card-body normalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- warnings %></h4>
+						<span class="osd-warning-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right osd-warning-select"></div>
+				</div>
+				
+				<div class="settings-card-body abnormalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- errors %></h4>
+						<span class="osd-error-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right osd-error-select"></div>
+				</div>
+				
+				<div class="settings-card-sub-title">
+					<span><%- monitor %></span>
+				</div>
+				
+				<div class="settings-card-body normalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- warnings %></h4>
+						<span class="mon-warning-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right mon-warning-select"></div>
+				</div>
+				
+				<div class="settings-card-body abnormalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- errors %></h4>
+						<span class="mon-error-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right mon-error-select"></div>
+				</div>
+				
+				<div class="settings-card-sub-title">
+					<span><%- placementGroup %></span>
+				</div>
+				
+				<div class="settings-card-body normalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- warnings %></h4>
+						<span class="pg-warning-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right pg-warning-select"></div>
+				</div>
+				
+				<div class="settings-card-body abnormalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- errors %></h4>
+						<span class="pg-error-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right pg-error-select"></div>
+				</div>
+				
+				<div class="settings-card-sub-title">
+					<span><%- usage %></span>
+				</div>
+				
+				<div class="settings-card-body normalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- warnings %></h4>
+						<span class="usage-warning-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right usage-warning-select"></div>
+				</div>
+				
+				<div class="settings-card-body abnormalPeriod clearfix">
+					<div class="pull-left">
+						<h4><%- errors %></h4>
+						<span class="usage-error-message"></span>
+					</div>
+					
+					<div class="col-md-2 col-sm-2 pull-right usage-error-select"></div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="alert-history" class="hidden"></div>
+	</div>
+</div>
