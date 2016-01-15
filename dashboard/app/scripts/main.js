@@ -85,7 +85,8 @@ require.config({
         idbwrapper: '../bower_components/idbwrapper/idbstore',
         q: '../bower_components/q/q',
         moment: '../bower_components/momentjs/moment',
-        'Backbone.Modal': 'vendor/backbone.modal'
+        'Backbone.Modal': 'vendor/backbone.modal',
+        'jquery.cookie': '../bower_components/jquery.cookie/jquery.cookie'
     }
 });
 // App.js invocation is done here.
