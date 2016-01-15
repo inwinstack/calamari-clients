@@ -8,7 +8,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         ui: {
             dashboardIcon: '.fa-tachometer',
             fullscreenIcon: '.fa-sitemap',
-            graphIcon: '.fa-bar-chart-o'
+            graphIcon: '.fa-bar-chart-o',
+            alertmanageIcon: '.fa-exclamation-triangle'
         },
         events: {
             'click span.bc-entry': 'switcher'
@@ -17,10 +18,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
             this.initial = Backbone.Marionette.getOption(this, 'initial') || 'dashboard';
-            _.bindAll(this, 'dashboardIcon', 'fullscreenIcon');
+            _.bindAll(this, 'dashboardIcon', 'fullscreenIcon', 'alertmanageIcon');
             this.listenTo(this.AppRouter, 'route:dashboard', this.dashboardIcon);
             this.listenTo(this.AppRouter, 'route:workbench', this.fullscreenIcon);
             this.listenTo(this.AppRouter, 'route:graph', this.graphIcon);
+            this.listenTo(this.AppRouter, 'route:alertmanage', this.alertmanageIcon);
             var self = this;
             this.listenTo(this, 'render', _.once(function() {
                 if (self.initial === 'vizmode') {
@@ -43,18 +45,24 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.$('.bc-active').removeClass('bc-active');
             this.ui.graphIcon.closest('span').addClass('bc-active');
         },
+        alertmanageIcon: function() {
+            this.$('.bc-active').removeClass('bc-active');
+            this.ui.alertmanageIcon.closest('span').addClass('bc-active');
+        },
         serializeData: function() {
             return {
                 title: {
                     dashboard: l10n.getSync('dashboardTitle'),
                     bench: l10n.getSync('workbenchTitle'),
                     chart: l10n.getSync('graphTitle'),
-                    manage: l10n.getSync('manageTitle')
+                    manage: l10n.getSync('manageTitle'),
+                    alertmanage: l10n.getSync('alertmanageTitle')
                 },
                 dashboard: l10n.getSync('dashboard'),
                 workbench: l10n.getSync('workbench'),
                 graph: l10n.getSync('graph'),
-                manage: l10n.getSync('manage')
+                manage: l10n.getSync('manage'),
+                alertmanage: l10n.getSync('alertmanage')
             };
         },
         switcher: function(evt) {
@@ -78,6 +86,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             }
             if (action === 'manage') {
                 document.location = '/manage/#/';
+            }
+            if (action === 'alertmanage') {
+                this.App.vent.trigger('app:alertmanage');
             }
         }
     });
