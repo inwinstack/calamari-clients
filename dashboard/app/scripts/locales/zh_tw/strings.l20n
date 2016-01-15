@@ -1,30 +1,30 @@
 <unconfigured "Unconfigured">
-<workbench "WORKBENCH">
-<graph "GRAPH">
-<dashboard "DASHBOARD">
-<manage "MANAGE">
-<workbenchTitle "OSD Workbench">
-<graphTitle "Charting">
-<dashboardTitle "Dashboard">
-<manageTitle "Management">
-<healthOSDTitle "Health">
+<workbench "OSD狀態">
+<graph "圖表">
+<dashboard "儀表板">
+<manage "管理">
+<workbenchTitle "OSD 狀態">
+<graphTitle "圖表">
+<dashboardTitle "儀表板">
+<manageTitle "管理">
+<healthOSDTitle "健康狀態">
 <DashOSDTitle "OSD">
-<DashOSDSubline "In & Up">
-<DashMonTitle "Monitors">
-<DashMonSubline "Quorum">
-<DashPoolsTitle "Pools">
-<DashPoolsSubline "Active">
-<DashPGStatusTitle "Placement Group Status">
-<DashPGStatusSubline "Active & Clean">
+<DashOSDSubline "正常運作中">
+<DashMonTitle "監控節點數">
+<DashMonSubline "台">
+<DashPoolsTitle "資源池">
+<DashPoolsSubline "">
+<DashPGStatusTitle "Placement Group 狀態">
+<DashPGStatusSubline "正常">
 <DashIOPSTitle "IOPS">
-<DashIOPSSubline "Reads + Writes">
-<DashUsageTitle "Usage">
-<DashUsageUsed "Used">
-<DashHostsTitle "Hosts">
-<DashHostsSubline "Reporting">
-<DashHostsSubtextMon "MON">
-<DashHostsSubtextAnd " /">
-<DashHostsSubtextOSD "OSD">
+<DashIOPSSubline "讀 + 寫">
+<DashUsageTitle "使用量">
+<DashUsageUsed "已使用">
+<DashHostsTitle "主機數">
+<DashHostsSubline "運作中">
+<DashHostsSubtextMon "台監控">
+<DashHostsSubtextAnd "及">
+<DashHostsSubtextOSD "台儲存節點">
 <pleaseContactAdmin "Please contact Administrator">
 <serverErrorMessage """
 Server Error {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}

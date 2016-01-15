@@ -6,15 +6,16 @@ define(['jquery',
         'templates',
         'helpers/gauge-helper',
         'collections/server-collection',
+        'l20nCtx!locales/{{locale}}/strings',
         'marionette'
-], function($, _, Backbone, JST, gaugeHelper, ServerCollection) {
+], function($, _, Backbone, JST, gaugeHelper, ServerCollection, l10n) {
     'use strict';
 
     var HostsDashView = Backbone.Marionette.ItemView.extend({
         className: 'col-lg-3 col-md-3 col-sm-6 col-xs-6 custom-gutter',
         template: JST['app/scripts/templates/hosts-dash.ejs'],
         headlineTemplate: _.template('<%- count %>'),
-        subtextTemplate: _.template('<%- mon %> MON/<%- osd %> OSD'),
+        subtextTemplate: _.template('<%- mon_num %> <%- mon %><%- and %> <%- osd_num %> <%- osd %>'),
         collectionEvents: {
             'change': 'checkModel',
             'sync': 'updateUI'
@@ -25,6 +26,10 @@ define(['jquery',
         },
         initialize: function() {
             _.bindAll(this);
+            this.model = new Backbone.Model({
+                title: l10n.getSync('DashHostsTitle'),
+                subline: l10n.getSync('DashHostsSubline')
+            });
             this.App = Backbone.Marionette.getOption(this, 'App');
             if (this.App) {
                 this.listenTo(this.App.vent, 'host:update', this.fetchHosts);
@@ -66,8 +71,11 @@ define(['jquery',
                 mon: 0
             });
             this.ui.subtext.text(this.subtextTemplate({
-                osd: counts.osd,
-                mon: counts.mon
+                mon: l10n.getSync('DashHostsSubtextMon'),
+                and: l10n.getSync('DashHostsSubtextAnd'),
+                osd: l10n.getSync('DashHostsSubtextOSD'),
+                mon_num: counts.mon,
+                osd_num: counts.osd
             }));
         }
     });
