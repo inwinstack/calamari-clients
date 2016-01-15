@@ -1,6 +1,7 @@
 @import 'inktank_colors';
 @import 'font-awesome/scss/font-awesome';
 @import 'compass/css3/border-radius';
+@import 'compass/css3/box-shadow';
 @import 'compass/css3/images';
 
 $login-background: $itdarkgray;
@@ -11,7 +12,7 @@ $app-logo-background: $itdarkred;
 body {
 	font-family: 'Titillium Web', sans-serif;
 	font-weight: 400;
-    background: $login-background;
+    background: #edfaff url(http://sso.cloud.edu.tw/SSO/views/images/login_body_bg.jpg) no-repeat center top;
 }
 .loginBox {
 }
@@ -24,8 +25,10 @@ body {
         margin-bottom: 40px;
     }
     margin-top: 40px;
-    background: $login-foreground;
-    @include border-radius($default-border-radius, $default-border-radius);
+    @include border-radius(10px);
+    @include box-shadow(0 0 10px #aaa);
+    background: rgba(255, 255, 255, .8);
+    border: 2px solid #fff;
 }
 .controls {
     text-align: center;
