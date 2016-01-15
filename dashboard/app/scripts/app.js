@@ -1,6 +1,6 @@
 /*global require, Uri */
 'use strict';
-require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme', 'notyGrowltheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Collection, UserDropDown, ClusterDropDown, GraphWall, helpers, gitcommit, Application, UserRequestTracker) {
+require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/application-view', 'models/application-model', 'helpers/config-loader', 'poller', 'collections/osd-collection', 'views/userdropdown-view', 'views/clusterdropdown-view', 'views/graphwall-view', 'views/alert-manage-view', 'helpers/graph-utils', 'gitcommit', 'application', 'tracker', 'jsuri', 'marionette', 'bootstrap', 'notytheme', 'notyGrowltheme'], function($, _, Backbone, log, humanize, views, models, configloader, Poller, Collection, UserDropDown, ClusterDropDown, GraphWall, AlertManage, helpers, gitcommit, Application, UserRequestTracker) {
     // Process Page URL - we look for parameters like target to set initial SPA state.
     var uri = new Uri(document.URL);
     var target = uri.getQueryParamValue('target');
@@ -16,6 +16,9 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         } else if (target === 'graph') {
             initial = 'graphmode';
             anchor = 'graph/all';
+        } else if (target === 'alertmanage') {
+            initial = 'alertmode';
+            anchor = 'alertmanage';
         }
         // Once we have processed the target param, delete it from the URL
         uri.deleteQueryParam('target');
@@ -51,7 +54,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         routes: {
             'workbench': 'workbench',
             'dashboard': 'dashboard',
-            'graph/:host(/:osd)': 'graph'
+            'graph/:host(/:osd)': 'graph',
+            'alertmanage': 'alertmanage'
         }
     });
     var appRouter = new AppRouter();
@@ -238,6 +242,14 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 graphiteHost: config['graphite-host'],
                 graphiteRequestDelayMs: config['graphite-request-delay-ms']
             });
+			
+			App.alertManage = new AlertManage({
+				App: App,
+                AppRouter: appRouter,
+				model: new models.StatusModel({
+					cluster: cluster.get('id')
+				})
+			});
 
             // Now we have a cluster, start the poller task so we get updates.
             viz.render().then(function() {
@@ -257,6 +269,9 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
             appRouter.on('route:graph', function(host, osd) {
                 log.debug('router>> host: ' + host + ' osd: ' + osd);
                 App.fsm.graph(host, osd);
+            });
+            appRouter.on('route:alertmanage', function() {
+                App.fsm.alertmanage();
             });
 
             // If a wait function was supplied invoke it now
@@ -319,6 +334,7 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
                 Gauge: gauge,
                 Gauges: gaugesLayout,
                 GraphWallView: App.graphWall,
+                AlertManageView: App.alertManage,
                 Poller: poller,
                 OsdView: osdView,
                 MonView: monView,
