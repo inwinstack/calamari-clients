@@ -1,0 +1,36 @@
+
+.switch-page li:active {
+	color: #555;
+}
+
+.settings-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+	margin: 10px 0;
+    position: relative;
+}
+
+.settings-card-title {
+    border-bottom: 1px solid #eee;
+    padding: 0 20px 10px 20px;
+}
+
+.settings-card-sub-title {
+    border-bottom: 1px solid #eee;
+    color: #666;
+    font-size: 16px;
+	padding: 10px 20px;
+}
+
+.settings-card-body {
+    padding: 10px 20px;
+}
+
+.settings-card-body:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+
+.settings-group span {
+	margin: 8px;
+}
