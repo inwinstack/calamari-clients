@@ -9,14 +9,25 @@
           <h3 class='graph-control-title'><i class='fa fa-clock-o'></i> Time Axis</h3>
           <div class='graph-value'>Day</div>
           <div class='graph-range'>
-            <input type='range' value=2 min=0 max=4 />
+            <input type='range' value=3 min=0 max=5 />
           </div>
           <div class='graph-label'>
+            <div class='f'></div>
             <div class='a'></div>
             <div class='b'></div>
             <div class='c'></div>
             <div class='d'></div>
             <div class='e'></div>
+          </div>
+          <div class='datetime-group'>
+            <div class='datetime-row'>
+              <span class='label'>From : </span>
+              <input class='graph-from control-datetime' size='20' type='text' readonly=''>
+            </div>
+            <div class='datetime-row'>
+              <span class='label'>Until : </span>
+              <input class='graph-until control-datetime' size='20' type='text' readonly=''>
+            </div>
           </div>
         </div>
         <div class='legend-area'>

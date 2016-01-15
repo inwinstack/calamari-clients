@@ -1,6 +1,6 @@
 /*global define*/
 
-define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'collections/server-collection','dygraphs', 'l20nCtx!locales/{{locale}}/strings', 'marionette', 'modal'], function($, _, Backbone, JST, gutils, models, ServerCollection, Dygraph, l10n) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 'models/application-model', 'collections/server-collection','dygraphs', 'l20nCtx!locales/{{locale}}/strings', 'marionette', 'modal', 'datetimepicker'], function($, _, Backbone, JST, gutils, models, ServerCollection, Dygraph, l10n) {
     'use strict';
 
     // GraphwallView
@@ -35,12 +35,15 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         events: {
             'click .btn-graph .btn': 'clickHandler',
             'change .hosts-select select': 'hostChangeHandler',
-            'input .graph-range input': 'changeGraphRange'
+            'input .graph-range input': 'changeGraphRange',
+            'change .graph-from': 'changeGraphFromDate',
+            'change .graph-until': 'changeGraphUntilDate'
         },
         collectionEvents: {
             'sync': 'resetGraphsOnClusterUpdate'
         },
         rangeText: [
+            l10n.getSync('Graph1Month'),
             l10n.getSync('Graph1Week'),
             l10n.getSync('Graph3Days'),
             l10n.getSync('Graph24Hours'),
@@ -48,14 +51,37 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             l10n.getSync('GraphHour')
         ],
         rangeQuery: [
-                '-7d', '-3d', '-1d', '-12hour', '-1hour'
+                '-1mon', '-7d', '-3d', '-1d', '-12hour', '-1hour'
         ],
+        rangeHours: {
+            '-1mon': 24 * 30,
+            '-7d': 24 * 7,
+            '-3d': 24 * 3,
+            '-1d': 24,
+            '-12hour': 12,
+            '-1hour': 1,
+        },
         rangeLabel: [
+            l10n.getSync('GraphLabelMonth'),
             l10n.getSync('GraphLabelWeek'),
             l10n.getSync('GraphLabel3Days'),
             l10n.getSync('GraphLabel24Hours'),
             l10n.getSync('GraphLabel12Hours'),
             l10n.getSync('GraphLabelHour')
+        ],
+        monthNames: [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
         ],
         graphTitleTemplates: {},
         graphOptions: {},
@@ -294,7 +320,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             this.graphiteRequestDelayMs = Backbone.Marionette.getOption(this, 'graphiteRequestDelayMs');
             this.baseUrl = gutils.makeBaseUrl(this.graphiteHost);
             this.heightWidth = gutils.makeHeightWidthParams(442, 266);
-            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate', 'clusterUpdate', 'renderGraphs');
+            _.bindAll(this, 'makeGraphFunctions', 'renderHostSelector', 'dygraphLoader', 'renderGraphTemplates', 'onItemBeforeClose', 'renderGraph', 'poolIopsGraphTitleTemplate', 'clusterUpdate', 'renderGraphs', 'bindDatepicker');
 
             // Generate graph builder functions
             _.each(this.graphs, this.makeGraphFunctions);
@@ -333,13 +359,14 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             }.bind(this);
             // Decorate the itemview render with our own hooks.
             this.render = _.wrap(this.render, this.renderWrapper);
+            this.renderGraphs = _.wrap(this.renderGraphs, this.renderGraphsWrapper);
 
             // Listen to view close so we can clean up the view correctly.
             this.listenTo(this, 'item:before:close', this.onItemBeforeClose);
 
             // Debounce graph slider changes to improve usability.
             this.debouncedChangedGraph = _.debounce(this.debouncedChangedGraph, 500);
-
+            
             // We use a promise to protect the graph from being rendered before it
             // is completely setup.
             this.readyDeferred = $.Deferred();
@@ -351,7 +378,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         isReady: function() {
             return this.readyPromise;
         },
-
         // This will be called from application.js while entering the graph page
         // This listener will be automatically removed when leaving graph
         listenToClusterChanges: function(vent) {
@@ -369,17 +395,185 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var $target = $(evt.target);
             var $parent = $target.closest('.graph-card');
             var $workarea = $parent.find('.workarea_g');
+            var $from = $parent.find('.graph-from');
+            var $until = $parent.find('.graph-until');
             var url = $workarea.data('url');
             var value = $target.val();
             var opts = _.extend($workarea.data('opts'), {
                 xlabel: this.rangeLabel[value]
             });
+            var range = this.rangeQuery[value];
+            var timezone = ' ' + window.inktank.App.Config.timezone;
+            var until = new Date($until.val() + timezone);
+            var from = this.getGraphFromDate(until, range);
+            var fromQuery = '&from=' + this.formatGraphDate(from);
+            var untilQuery = '&until=' + this.formatGraphDate(until);
+            
+            $from.val(this.formatViewDate(from));
             $parent.find('.graph-value').text(this.rangeText[value]);
             var index = url.indexOf('&from');
             if (index !== -1) {
                 url = url.slice(0, index);
             }
-            this.debouncedChangedGraph($parent, url + '&from=' + this.rangeQuery[value], opts);
+            this.debouncedChangedGraph($parent, url + fromQuery + untilQuery, opts);
+        },
+        changeGraphFromDate: function (e) {
+            var self = this;
+            var $from = $(e.target);
+            var $parent = $from.closest('.graph-card');
+            var $workarea = $parent.find('.workarea_g');
+            var $range = $parent.find('.graph-range input');
+            var $until = $parent.find('.graph-until');
+            var timezone = ' ' + window.inktank.App.Config.timezone;
+            var range = this.rangeQuery[$range.val()];
+            var from = new Date($from.val() + timezone);
+            var until = this.getGraphUntilDate(from, range);
+            
+            if (until.valueOf() - from.valueOf() < 3600 * 1000) {
+                $range.val(5);
+                
+                range = this.rangeQuery[5];
+                until = new Date();
+                from = this.getGraphFromDate(until, range);
+                
+                setTimeout(function () {
+                    $from.val(self.formatViewDate(from));
+                }, 1);
+            }
+            
+            var url = $workarea.data('url');
+            var opts = _.extend($workarea.data('opts'), {
+                xlabel: this.rangeLabel[$range.val()]
+            });
+            var fromQuery = '&from=' + this.formatGraphDate(from);
+            var untilQuery = '&until=' + this.formatGraphDate(until);
+            var index = url.indexOf('&from');
+            
+            url = index !== -1 ? url.slice(0, index) : url;
+            
+            $until.val(this.formatViewDate(until));
+            
+            this.debouncedChangedGraph($parent, url + fromQuery + untilQuery, opts);
+        },
+        changeGraphUntilDate: function (e) {
+            var self = this;
+            var $until = $(e.target);
+            var $parent = $until.closest('.graph-card');
+            var $workarea = $parent.find('.workarea_g');
+            var $range = $parent.find('.graph-range input');
+            var $from = $parent.find('.graph-from');
+            var timezone = ' ' + window.inktank.App.Config.timezone;
+            var range = this.rangeQuery[$range.val()];
+            var until = new Date($until.val() + timezone);
+            var from = this.getGraphFromDate(until, range);
+            var boundary = Date.now() - 3600 * 1000 * 24 * 7;
+            
+            if (from.valueOf() < boundary) {
+                $range.val(5);
+                
+                range = this.rangeQuery[5];
+                from = new Date(boundary);
+                until = this.getGraphUntilDate(from, range);
+                
+                setTimeout(function () {
+                    $until.val(self.formatViewDate(until));
+                }, 1);
+            }
+            
+            var url = $workarea.data('url');
+            var opts = _.extend($workarea.data('opts'), {
+                xlabel: this.rangeLabel[$range.val()]
+            });
+            var fromQuery = '&from=' + this.formatGraphDate(from);
+            var untilQuery = '&until=' + this.formatGraphDate(until);
+            var index = url.indexOf('&from');
+            
+            url = index !== -1 ? url.slice(0, index) : url;
+            
+            $from.val(this.formatViewDate(from));
+            
+            this.debouncedChangedGraph($parent, url + fromQuery + untilQuery, opts);
+        },
+        /**
+         * @return String hh:mm_yyyymmdd 
+         */
+        formatGraphDate: function (time) {
+            var hours = time.getHours();
+            var minutes = time.getMinutes();
+            var year = time.getFullYear();
+            var month = time.getMonth() + 1;
+            var date = time.getDate();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            month = month < 10 ? '0' + month : month;
+            date = date < 10 ? '0' + date : date;
+            
+            return hours + ':' + minutes + '_' + year + month + date;
+        },
+        /**
+         * @return String yyyy M dd hh:ii
+         */
+        formatViewDate: function (time) {
+            var hours = time.getHours();
+            var minutes = time.getMinutes();
+            var year = time.getFullYear();
+            var month = time.getMonth();
+            var date = time.getDate();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            month = this.monthNames[month].slice(0, 3);
+            date = date < 10 ? '0' + date : date;
+            
+            return year + ' ' + month + ' ' + date + ' ' + hours + ':' + minutes;
+        },
+        /**
+         * @param until Date
+         *
+         * @return Date
+         */
+        getGraphFromDate: function (until, range) {
+            var from = new Date(until);
+            var sixMonthAgo = Date.now() - 3600 * 1000 * 24 * 180;
+            
+            if (range === '-1mon') {
+                from = this.isLastDayOfMonth(until) ? from.setDate(1) : from.setMonth(until.getMonth() - 1);
+            } else {
+                from = from.setHours(until.getHours() - this.rangeHours[range]);
+            }
+            
+            return from > sixMonthAgo ? new Date(from) : new Date(sixMonthAgo);
+        },
+        /**
+         * @param from Date
+         *
+         * @return Date
+         */
+        getGraphUntilDate: function (from, range) {
+            var until = new Date(from);
+            
+            if (range === '-1mon') {
+                until = this.isFirstDayOfMonth(from) ? until.setDate(this.getDaysOfMonth(from)) : until.setMonth(from.getMonth() + 1);
+            } else {
+                until = until.setHours(from.getHours() + this.rangeHours[range]);
+            }
+            
+            return until = until < Date.now() ? new Date(until) : new Date();
+        },
+        isFirstDayOfMonth: function (time) {
+            return time.getDate() === 1;
+        },
+        isLastDayOfMonth: function (time) {
+            return time.getDate() === this.getDaysOfMonth(time);
+        },
+        getDaysOfMonth: function (time) {
+            var date = new Date(time);
+            
+            date.setMonth(date.getMonth() + 1);
+            date.setDate(0);
+            
+            return date.getDate();
         },
         // **hostChangeHandler**
         // Handle dropdown select change event. Change the route of the App
@@ -517,10 +711,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
             var self = this;
             this.selectors = _.map(_.range(96), function(id) {
                 var selector = 'graph-' + id;
-                var t = self.graphTemplate({
+                var tmpl = self.graphTemplate({
                     graphid: selector
                 });
-                self.$el.append(t);
+                
+                self.$el.append(tmpl);
+                
                 return '.' + selector;
             });
         },
@@ -727,12 +923,37 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     host: host
                 });
             }, '', this);
-            var $el = this.ui.hosts;
+            var $el = $(this.ui.hosts);
+            
             $el.html(this.selectTemplate({
                 Cluster: l10n.getSync('Cluster')+ ' - ' + this.collection.clusterName,
                 PoolIOPS: l10n.getSync('PoolIOPS'),
                 list: opts
             }));
+        },
+        bindDatepicker: function () {
+            var $controls = $('.graph-card').find('.control-datetime').filter(function (i, elem) {
+                return $(elem).css('visibility') === 'visible';
+            });
+            
+            var now = new Date();
+            var yesterday = new Date(now - 3600 * 1000 * 24);
+            
+            $controls.datetimepicker({
+                pickerReferer: 'input',
+                autoclose: true,
+                format: 'yyyy M dd hh:ii',
+                maxView: 3,
+                minView: 0,
+                minuteStep: 10,
+                todayBtn:  1,
+                todayHighlight: 1,
+                startDate: new Date(now - 3600 * 1000 * 24 * 180),
+                endDate: now
+            });
+            
+            $controls.filter('.graph-from').val(this.formatViewDate(yesterday));
+            $controls.filter('.graph-until').val(this.formatViewDate(now));
         },
 
         // **resetGraphsOnClusterUpdate**
@@ -892,7 +1113,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
         hideGraphs: function() {
             this.$('.graph-card, .workarea_g').css('visibility', 'hidden');
             this.$('.graph-range input').each(function(index, el) {
-                el.value = 2;
+                el.value = 3;
             });
             var self = this;
             this.$('.graph-value').each(function(index, el) {
@@ -918,6 +1139,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'helpers/graph-utils', 
                     self.dygraphLoader($graphEl, graph.url, graph.options);
                 }, self.graphiteRequestDelayMs * index);
             });
+        },
+        renderGraphsWrapper: function (fn, title, callback) {
+            fn.call(this, title, callback);
+            _.delay(this.bindDatepicker.bind(this));
         },
         // **updateSelect**
         // Update the select box after a route change.

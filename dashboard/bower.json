@@ -18,6 +18,7 @@
     "backbone.babysitter": "~0.0.6",
     "javascript-state-machine": "~2.2.0",
     "bootstrap-switch": "latest",
+    "smalot-bootstrap-datetimepicker": "2.3.5",
     "noty": "~2.1.0",
     "kineticjs": "~4.7.3",
     "dygraphs": "~1.0.1",

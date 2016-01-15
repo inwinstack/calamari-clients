@@ -65,6 +65,7 @@ require.config({
         underscore: '../bower_components/underscore-amd/underscore',
         bootstrap: 'vendor/bootstrap',
         popover: '../bower_components/sass-bootstrap/js/popover',
+        datetimepicker: '../bower_components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker',
         modal: '../bower_components/sass-bootstrap/js/modal',
         gauge: 'vendor/gauge',
         bean: '../bower_components/bean/bean',
