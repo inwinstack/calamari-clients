@@ -43,7 +43,8 @@ require(['jquery', 'underscore', 'backbone', 'loglevel', 'humanize', 'views/appl
         'long-polling-interval-ms': 20000,
         'disable-network-checks': false,
         'graphite-request-delay-ms': 50,
-        'enable-demo-mode': false
+        'enable-demo-mode': false,
+        'timezone': 'GMT+0800'
     };
 
     /* Default Backbone Router Configuration */
