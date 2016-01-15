@@ -18,16 +18,20 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 initial: options.initial || 'dashmode',
                 events: [{
                         name: 'dashboard',
-                        from: ['dashmode', 'vizmode', 'graphmode'],
+                        from: ['dashmode', 'vizmode', 'graphmode', 'alertmode'],
                         to: 'dashmode'
                     }, {
                         name: 'viz',
-                        from: ['dashmode', 'graphmode', 'vizmode'],
+                        from: ['dashmode', 'graphmode', 'vizmode', 'alertmode'],
                         to: 'vizmode'
                     }, {
                         name: 'graph',
-                        from: ['dashmode', 'vizmode', 'graphmode'],
+                        from: ['dashmode', 'vizmode', 'graphmode', 'alertmode'],
                         to: 'graphmode'
+                    }, {
+                        name: 'alertmanage',
+                        from: ['dashmode', 'vizmode', 'graphmode', 'alertmode'],
+                        to: 'alertmode'
                     }
                 ],
                 callbacks: {
@@ -37,8 +41,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                     onleavegraphmode: this.onleavegraphmode,
                     onenterdashmode: this.onenterdashmode,
                     onleavedashmode: this.onleavedashmode,
+                    onenteralertmode: this.onenteralertmode,
+                    onleavealertmode: this.onleavealertmode,
                     ongraph: this.ongraph,
-                    ondashboard: this.ondashboard
+                    ondashboard: this.ondashboard,
+                    onalertmanage: this.onalertmanage
                 }
             });
             // bind Finite State Machine functions to FSM instance.
@@ -52,6 +59,11 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
             });
             this.listenTo(this.vent, 'app:dashboard', function() {
                 this.appRouter.navigate('dashboard', {
+                    trigger: true
+                });
+            });
+            this.listenTo(this.vent, 'app:alertmanage', function() {
+                this.appRouter.navigate('alertmanage', {
                     trigger: true
                 });
             });
@@ -267,6 +279,37 @@ define(['jquery', 'underscore', 'backbone', 'helpers/animation', 'statemachine',
                 // ready to receive it.
                 this.vent.trigger('dashboard:refresh');
             }.bind(this), 500);
+        },
+        // On entering alert manage.
+        onenteralertmode: function(event, from, to) {
+			log.debug(debugTemplate({
+                'prefix': 'ENTER',
+                'event': event,
+                'from': from,
+                'to': to
+            }));
+			var self = this;
+			
+            var vent = this.vent;
+            $('.row').css('display', 'none');
+			self.alertManage.render();
+			$('.container').append(self.alertManage.$el);
+        },
+        // On leaving alert manage.
+        onleavealertmode: function() {
+            this.alertManage.close();
+            $('.row').css('display', 'block');
+		},
+        // In alert manage.
+        onalertmanage: function(event, from, to) {
+            log.debug(debugTemplate({
+                'prefix': 'AFTER',
+                'event': event,
+                'from': from,
+                'to': to
+            }));
+            var alertManage = this.alertManage;
+            var self = this;
         }
     });
     return Application;
