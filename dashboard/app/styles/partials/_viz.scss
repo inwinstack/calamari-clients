@@ -15,7 +15,7 @@
 }
 .raphael-one {
     position: relative;
-    background-color: $itlightgray;
+    background-color: $moe-white;
     height: 600px;
     &.viz-hidden {
 	max-height: 0;
@@ -85,7 +85,7 @@ ul.filter {
     }
 }
 .workbench-mode {
-    background-color: $itlightgray;
+    background-color: $moe-white;
 }
 .workbench {
     margin-top: 5px;

@@ -1,4 +1,4 @@
-$itapp-background-color: $itdarkgray;
+$itapp-background-color: $moe-white;
 $itapp-card-color: $itlightgray;
 $itapp-font-family: 'Titillium Web', sans-serif;
 $itapp-font-weight-normal: 400;
@@ -22,17 +22,17 @@ $third-row-height: 120px;
 .navbar {
     margin-bottom:0;
     min-height: 58px;
-    @include background(linear-gradient(bottom, darken($itdarkred, 20%), darken($itred, 40%)));
-    @include border-radius(3px);
+    background: $moe-blue;
+    @include border-radius(0);
     @include box-shadow(0 2px 4px rgba(0, 0, 0, .2));
-    border: 1px solid darken($itdarkred, 15%);
+    border: 0;
     width: 100%;
 }
 
 .navbar .navbar-nav > li > a {
 	text-shadow: 0 1px 0 $itgray;
 	color: $itlightgray;
-        @include background(linear-gradient(bottom, darken($itdarkred, 20%), darken($itred, 40%)));
+        background: transparent;
 	&:hover {
 		color: darken($itlightgray, 15%);
 	}
