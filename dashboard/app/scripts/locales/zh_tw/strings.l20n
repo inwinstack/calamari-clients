@@ -3,6 +3,7 @@
 <graph "圖表">
 <dashboard "儀表板">
 <manage "管理">
+<alertmanage "警告">
 <workbenchTitle "OSD 狀態">
 <graphTitle "圖表">
 <dashboardTitle "儀表板">
@@ -81,3 +82,45 @@ you back out. Shift-drag will pan.
 <UserRequestViewColUpdated "Updated">
 <UserRequestViewCloseBtn "Close">
 <UserRequestViewError "error">
+<settings "Settings">
+<history "History">
+<notifications "Notifications">
+<email "Email Notifications">
+<emailMessage "Notification will be sent to {{ $email }}">
+<timePeriod "Time Period">
+<normalStatusPeriod "Normal Status Period">
+<normalMessage "Check the system health every {{ $hr }} hour(s) {{ $min }} minute(s) {{ $sec }} second(s)">
+<abnormalStatusPeriod "Abnormal Status Period">
+<abnormalMessage "Check the system health every {{ $hr }} hour(s) {{ $min }} minute(s) {{ $sec }} second(s)">
+<serverAbnormalStatusPeriod "Server Abnormal Status Period">
+<serverAbnormalMessage "Check the system health every {{ $hr }} hour(s) {{ $min }} minute(s) {{ $sec }} second(s)">
+<alertTrigger "Alert Triggers">
+<osd "OSD">
+<warnings "Warnings">
+<errors "Errors">
+<osdWarningsMessage "Trigger alert when {{ $value }} OSD is in abnormal status">
+<osdErrorsMessage "Trigger alert when {{ $value }} OSD is in severely status">
+<monitor "Monitor">
+<monWarningsMessage "Trigger alert when {{ $value }} monitor is in abnormal status">
+<monErrorsMessage "Trigger alert when {{ $value }} monitor is in severely status">
+<placementGroup "Placement Group">
+<pgWarningsMessage "Trigger alert when {{ $value }}% PGs are modified by Ceph">
+<pgErrorsMessage "Trigger alert when {{ $value }}% PGs stuck in abnormal states">
+<usage "Usage">
+<usageWarningsMessage "Trigger alert when usage exceeds {{ $value }}%">
+<usageErrorsMessage "Trigger alert when usage exceeds {{ $value }}%">
+<titleAlertOSDWarning "OSD is in abnormal status!">
+<titleAlertOSDError "OSD is in severe status!">
+<titleAlertMONWarning "Monitor is in abnormal status!">
+<titleAlertMONError "Monitor is in severe status!">
+<titleAlertPGWarning "Some PGs are being modified by Ceph!">
+<titleAlertPGError "Some PGs stuck in abnormal states!">
+<titleAlertUsageWarning "Disk usage exceeds {{ $usage }}%! Please expand the storage capacity!">
+<titleAlertUsageError "Not enough free space! Please expand the storage capacity immediately!">
+<titleAlertWarningsCount "Warnings">
+<titleAlertErrorsCount "Errors">
+<titleAlertUsageCount "Usage">
+<titleTriggered "Triggered at">
+<titleResolved "Resolved at">
+<alertStatusPending "Pending">
+<alertStatusResolved "Resolved">
