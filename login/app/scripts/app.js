@@ -9,7 +9,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
             'input input[name="username"],input[name="password"]': 'loginToggle'
         },
         ui: {},
-        iconTemplate: _.template('<i class="<%- iconClazz %>" icon-large"></i>'),
+        iconTemplate: _.template('<i class="<%- iconClazz %> icon-large"></i><span style="margin-top: 5px;"><%- loginButton %></span>'),
         initialize: function() {
             _.bindAll(this, 'loginHandler', 'loginToggle', 'toJSON', 'disableSubmit', 'enableSubmit', 'showErrors', 'hideErrors');
             // Issue #8352 Workaround Browser Autofill not sending input event
@@ -17,6 +17,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                 this.loginToggle();
             }.bind(this), 500);
         },
+        emptyForm: 0,
         render: function() {
             this.ui.username = this.$('input[name="username"]');
             this.ui.password = this.$('input[name="password"]');
@@ -44,6 +45,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
             var get = $.get(this.loginUrl),
                 self = this;
             this.disableSubmit('icon-spinner icon-spin');
+            
             this.hideErrors();
             get.then(function() {
                 var xsrfToken = $.cookie(self.xsrfCookieName);
@@ -70,7 +72,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                 // All other errors
                 self.showErrors(jqxhr.statusCode().status + ' ' + error);
             }).always(function() {
-                self.enableSubmit('icon-ok');
+                self.enableSubmit();
             });
             return false;
         },
@@ -83,22 +85,25 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
         },
         disableSubmit: function(iconClazz) {
             this.ui.submit.attr('disabled', 'disabled').addClass('disabled').html(this.iconTemplate({
-                iconClazz: iconClazz
+                iconClazz: iconClazz,
+                loginButton: this.emptyForm ? "" : '登入'
             }));
         },
         enableSubmit: function(iconClazz) {
             this.ui.submit.removeAttr('disabled').removeClass('disabled').html(this.iconTemplate({
-                iconClazz: iconClazz
+                iconClazz: iconClazz,
+                loginButton: '登入'
             }));
         },
         loginToggle: function() {
             var username = this.ui.username,
                 password = this.ui.password;
             if (username.val().length > 0 && password.val().length > 0) {
-                this.enableSubmit('icon-ok');
+                this.enableSubmit();
+                this.emptyForm = 1;
                 return;
             }
-            this.disableSubmit('icon-ban-circle');
+            this.disableSubmit('');
         }
     });
 
