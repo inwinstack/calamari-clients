@@ -1,0 +1,126 @@
+<unconfigured "Unconfigured">
+<workbench "OSD狀態">
+<graph "圖表">
+<dashboard "儀表板">
+<manage "管理">
+<alertmanage "警告">
+<workbenchTitle "OSD 狀態">
+<graphTitle "圖表">
+<dashboardTitle "儀表板">
+<manageTitle "管理">
+<healthOSDTitle "健康狀態">
+<DashOSDTitle "OSD">
+<DashOSDSubline "正常運作中">
+<DashMonTitle "監控節點數">
+<DashMonSubline "台">
+<DashPoolsTitle "資源池">
+<DashPoolsSubline "">
+<DashPGStatusTitle "Placement Group 狀態">
+<DashPGStatusSubline "正常">
+<DashIOPSTitle "IOPS">
+<DashIOPSSubline "讀 + 寫">
+<DashUsageTitle "使用量">
+<DashUsageUsed "已使用">
+<DashHostsTitle "主機數">
+<DashHostsSubline "運作中">
+<DashHostsSubtextMon "台監控">
+<DashHostsSubtextAnd "及">
+<DashHostsSubtextOSD "台儲存節點">
+<pleaseContactAdmin "Please contact Administrator">
+<serverErrorMessage """
+Server Error {{ $status }} {{ $responseText }}. {{ pleaseContactAdmin }}
+""">
+<clusterUpdatesAreStale """
+Cluster Updates Are Stale. The Calamari update process may have failed.
+""">
+<clusterNotResponding """
+Cluster Updates Are Stale. The Cluster isn't updating Calamari. {{ pleaseContactAdmin }}
+""">
+<sessionTimeout "Session Has Timed Out. Please Login again.">
+<loginButton "Login">
+<dashboardUpdateTimeout "Dashboard Update Timed Out. Please check your connection.">
+<unexpectedError "Unexpected Error ({{ $status }}){{ $responseText }}. {{ pleaseContactAdmin }}">
+<serverUnreachable "Server Unreachable. Try re-loading page or contact an Administrator.">
+<JSONParserError "Error decoding {{ $source }} response from server. {{ pleaseContactAdmin }}">
+<TitleGraphDiskSpaceBytes "OSD {{ $id }} Disk Space">
+<TitleGraphDiskSpaceInodes "OSD {{ $id }} Inodes">
+<TitleGraphHostCPUSummary "{{ $hostname }} CPU Summary">
+<TitleGraphCPUDetail "{{ $id }} CPU Detail">
+<TitleGraphOpsLatency "{{ $id }} Ops Latency">
+<TitleGraphJournalOps "{{ $id }} Journal Ops">
+<TitleGraphLoadAverage "{{ $hostname }} Load Average">
+<TitleGraphMemory "{{ $hostname }} Memory">
+<TitleGraphRWBytes "{{ $id }} RW Bytes">
+<TitleGraphRWAwait "{{ $id }} RW Await">
+<TitleGraphIOPS "{{ $id }} IOPS">
+<TitleGraphNetworkTXRXBytes "{{ $id }} Network TX/RX Bytes">
+<TitleGraphNetworkTXRXPackets "{{ $id }} Network TX/RX Packets">
+<TitleGraphNetworkTXRXErrors "{{ $id }} Network TX/RX Errors">
+<TitleGraphNetworkTXRXDrops "{{ $id }} Network TX/RX Drops">
+<TitleGraphPoolIOPS "Pool {{ $id }} IOPS">
+<TitleGraphPoolTotalDiskFree "Pools Total Disk Free">
+<Graph1Week "1 Week">
+<Graph3Days "3 Days">
+<Graph24Hours "24 Hours">
+<Graph12Hours "12 Hours">
+<GraphHour "Hour">
+<GraphLabelWeek "Time ({{ Graph1Week }})">
+<GraphLabel3Days "Time ({{ Graph3Days }})">
+<GraphLabel24Hours "Time (Last {{ Graph24Hours}})">
+<GraphLabel12Hours "Time (Last {{ Graph12Hours}})">
+<GraphLabelHour "Time (Last {{ GraphHour}})">
+<GraphHelp """
+The chart is interactive: you can mouse over to highlight individual
+values. You can click and drag to zoom. Double-clicking will zoom
+you back out. Shift-drag will pan.
+""">
+<Cluster "Cluster">
+<PoolIOPS "Pool IOPS">
+<UserRequestViewTitle "Requested Tasks">
+<UserRequestViewColTask "Task">
+<UserRequestViewColStatus "Status">
+<UserRequestViewColUpdated "Updated">
+<UserRequestViewCloseBtn "Close">
+<UserRequestViewError "error">
+<settings "Settings">
+<history "History">
+<notifications "Notifications">
+<email "Email Notifications">
+<emailMessage "Notification will be sent to {{ $email }}">
+<timePeriod "Time Period">
+<normalStatusPeriod "Normal Status Period">
+<normalMessage "Check the system health every {{ $hr }} hour(s) {{ $min }} minute(s) {{ $sec }} second(s)">
+<abnormalStatusPeriod "Abnormal Status Period">
+<abnormalMessage "Check the system health every {{ $hr }} hour(s) {{ $min }} minute(s) {{ $sec }} second(s)">
+<serverAbnormalStatusPeriod "Server Abnormal Status Period">
+<serverAbnormalMessage "Check the system health every {{ $hr }} hour(s) {{ $min }} minute(s) {{ $sec }} second(s)">
+<alertTrigger "Alert Triggers">
+<osd "OSD">
+<warnings "Warnings">
+<errors "Errors">
+<osdWarningsMessage "Trigger alert when {{ $value }} OSD is in abnormal status">
+<osdErrorsMessage "Trigger alert when {{ $value }} OSD is in severely status">
+<monitor "Monitor">
+<monWarningsMessage "Trigger alert when {{ $value }} monitor is in abnormal status">
+<monErrorsMessage "Trigger alert when {{ $value }} monitor is in severely status">
+<placementGroup "Placement Group">
+<pgWarningsMessage "Trigger alert when {{ $value }}% PGs are modified by Ceph">
+<pgErrorsMessage "Trigger alert when {{ $value }}% PGs stuck in abnormal states">
+<usage "Usage">
+<usageWarningsMessage "Trigger alert when usage exceeds {{ $value }}%">
+<usageErrorsMessage "Trigger alert when usage exceeds {{ $value }}%">
+<titleAlertOSDWarning "OSD is in abnormal status!">
+<titleAlertOSDError "OSD is in severe status!">
+<titleAlertMONWarning "Monitor is in abnormal status!">
+<titleAlertMONError "Monitor is in severe status!">
+<titleAlertPGWarning "Some PGs are being modified by Ceph!">
+<titleAlertPGError "Some PGs stuck in abnormal states!">
+<titleAlertUsageWarning "Disk usage exceeds {{ $usage }}%! Please expand the storage capacity!">
+<titleAlertUsageError "Not enough free space! Please expand the storage capacity immediately!">
+<titleAlertWarningsCount "Warnings">
+<titleAlertErrorsCount "Errors">
+<titleAlertUsageCount "Usage">
+<titleTriggered "Triggered at">
+<titleResolved "Resolved at">
+<alertStatusPending "Pending">
+<alertStatusResolved "Resolved">
