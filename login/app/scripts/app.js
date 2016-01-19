@@ -17,7 +17,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                 this.loginToggle();
             }.bind(this), 500);
         },
-        emptyForm: 0,
+        completeForm: 0,
         render: function() {
             this.ui.username = this.$('input[name="username"]');
             this.ui.password = this.$('input[name="password"]');
@@ -86,7 +86,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
         disableSubmit: function(iconClazz) {
             this.ui.submit.attr('disabled', 'disabled').addClass('disabled').html(this.iconTemplate({
                 iconClazz: iconClazz,
-                loginButton: this.emptyForm ? '' : '登入'
+                loginButton: this.completeForm ? '' : '登入'
             }));
         },
         enableSubmit: function(iconClazz) {
@@ -100,7 +100,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                 password = this.ui.password;
             if (username.val().length > 0 && password.val().length > 0) {
                 this.enableSubmit('');
-                this.emptyForm = 1;
+                this.completeForm = 1;
                 return;
             }
             this.disableSubmit('');
