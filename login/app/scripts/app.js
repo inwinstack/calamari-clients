@@ -86,7 +86,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
         disableSubmit: function(iconClazz) {
             this.ui.submit.attr('disabled', 'disabled').addClass('disabled').html(this.iconTemplate({
                 iconClazz: iconClazz,
-                loginButton: this.emptyForm ? "" : '登入'
+                loginButton: this.emptyForm ? '' : '登入'
             }));
         },
         enableSubmit: function(iconClazz) {
