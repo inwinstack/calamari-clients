@@ -72,7 +72,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                 // All other errors
                 self.showErrors(jqxhr.statusCode().status + ' ' + error);
             }).always(function() {
-                self.enableSubmit();
+                self.enableSubmit('');
             });
             return false;
         },
@@ -99,7 +99,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
             var username = this.ui.username,
                 password = this.ui.password;
             if (username.val().length > 0 && password.val().length > 0) {
-                this.enableSubmit();
+                this.enableSubmit('');
                 this.emptyForm = 1;
                 return;
             }
