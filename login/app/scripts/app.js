@@ -103,6 +103,7 @@ define(['underscore', 'jquery', 'backbone', 'gitcommit', 'jquery.cookie'], funct
                 this.completeForm = 1;
                 return;
             }
+            this.completeForm = 0;
             this.disableSubmit('');
         }
     });
