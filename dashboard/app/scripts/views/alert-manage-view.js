@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'models/user-info-model', 'collections/alert-rule-collection', 'marionette', 'bootstrap-switch', 'jquery.cookie'], function($, _, Backbone, JST, l10n, UserInfoModel, AlertRuleCollection) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'models/user-info-model', 'collections/alert-rule-collection', 'collections/alert-history-collection', 'marionette', 'bootstrap-switch', 'jquery.cookie'], function($, _, Backbone, JST, l10n, UserInfoModel, AlertRuleCollection, AlertHistoryCollection) {
     'use strict';
 
     var AlertManageView = Backbone.Marionette.ItemView.extend({
@@ -8,6 +8,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         selectTemplate: _.template('<select class="form-control" name="<%= name %>"><%= list %></select>'),
         optionTemplate: _.template('<option value="<%- count %>"><%- value %></option>"'),
         selectResetTemplate: _.template('select option[value="<%- id %>"]'),
+        alertTemplate: JST['app/scripts/templates/alert-history.ejs'],
+        alertEmptyTemplate: JST['app/scripts/templates/alert-history-empty.ejs'],
 		
         xsrfCookieName: 'XSRF-TOKEN',
         xsrfHeaderName: 'X-XSRF-TOKEN',
@@ -55,7 +57,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 			'usageWarningsMessage': '.usage-warning-message',
 			'usageErrorsMessage': '.usage-error-message',
 			'emailMessage': '.email-message',
-			'alertStatusIcon': '.alert-status-icon'
+			'alertStatusIcon': '.alert-status-icon',
+			'alerts': '#alert-history'
 		},
 		events: {
 			'change .normal-hr-select select': 'updateNormalHr',
@@ -78,7 +81,36 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 			'click .alert-history': 'switchHistoryPage',
 			'click .alert-settings': 'switchSettingsPage'
 		},
-				
+		
+		alertCardTitleKeys: {
+			'013001': 'titleAlertOSDWarning',
+			'012001': 'titleAlertOSDError',
+			'023001': 'titleAlertMONWarning',
+			'022001': 'titleAlertMONError',
+			'033001': 'titleAlertPGWarning',
+			'032001': 'titleAlertPGError',
+			'043001': 'titleAlertUsageWarning',
+			'042001': 'titleAlertUsageError'
+		},
+		params: {
+			titleTriggered: l10n.getSync('titleTriggered'),
+			titleResolved: l10n.getSync('titleResolved'),
+			alertStatusPending: l10n.getSync('alertStatusPending'),
+			alertStatusResolved: l10n.getSync('alertStatusResolved')
+		},
+		levelClasses: {
+			2: 'status-error',
+			3: 'status-warning'
+		},
+		countTitles: {
+			2: l10n.getSync('titleAlertErrorsCount'),
+			3: l10n.getSync('titleAlertWarningsCount')
+		},
+		statusClasses: {
+			pending: 'alert-status-pending',
+			resolved: 'alert-status-resolved'
+		},
+		
 		messages: [{
 			fn: 'getNormalMessage',
 			messageId: 'normalMessage',
@@ -119,6 +151,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 		
 		loadedCollection: false,
 		loadedUserInfoModel: false,
+		loadedAlertHistory: false,
 		
 		initialize: function() {
 			var self = this;
@@ -129,6 +162,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             }
             this.collection = new AlertRuleCollection();
 			this.userInfoModel = new UserInfoModel();
+			this.alertHistoryCollection = new AlertHistoryCollection();
 			
 			this.hours = _.range(24);
 			this.minutes = _.range(60);
@@ -137,7 +171,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.App = Backbone.Marionette.getOption(this, 'App');
             this.AppRouter = Backbone.Marionette.getOption(this, 'AppRouter');
 			
-			_.bindAll(this, 'renderEmailSwitch', 'renderNormalStatusPeriod', 'renderAbnormalStatusPeriod', 'renderServerStatusPeriod', 'renderOSDWarnings', 'renderOSDErrors', 'renderMONWarnings', 'renderMONErrors', 'renderPGWarnings', 'renderPGErrors', 'renderUsageWarnings', 'renderUsageErrors', 'makeMessageFunctions');
+			_.bindAll(this, 'renderEmailSwitch', 'renderNormalStatusPeriod', 'renderAbnormalStatusPeriod', 'renderServerStatusPeriod', 'renderOSDWarnings', 'renderOSDErrors', 'renderMONWarnings', 'renderMONErrors', 'renderPGWarnings', 'renderPGErrors', 'renderUsageWarnings', 'renderUsageErrors', 'renderHistory', 'makeMessageFunctions');
 			_.each(this.messages, this.makeMessageFunctions);
 			this.render = _.wrap(this.render, this.renderWrapper);
 			
@@ -149,12 +183,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				self.loadedUserInfoModel = true;
 				self.render();
 			});
+			this.listenTo(this.alertHistoryCollection, 'successOnFetch', function() {
+				self.loadedAlertHistory = true;
+				self.render();
+			});
 			
 			this.model.fetch().done(function () {
 				self.collection.getAlertRules();
 			});
 			this.userInfoModel.fetch().done(function () {
 				self.userInfoModel.getUserInfo();
+			});
+			this.alertHistoryCollection.fetch().done(function () {
+				self.alertHistoryCollection.getAlertHistorys();
 			});
 		},
         renderEmailSwitch: function() {
@@ -789,8 +830,12 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 			getUi.text(message);
 		},
 		
+		renderHistory: function() {
+			this.alertHistoryCollection.models ? this.fetchAlertList() : this.ui.alerts.html(this.alertEmptyTemplate);
+		},
+	    
 		renderWrapper: function(fn) {
-            if (!this.loadedCollection && !this.loadedUserInfoModel){ return; }
+            if (!this.loadedCollection && !this.loadedUserInfoModel && !this.loadedAlertHistory){ return; }
 			fn.call(this);
             this.renderEmailSwitch();
 			this.renderNormalStatusPeriod();
@@ -804,6 +849,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.renderPGErrors();
             this.renderUsageWarnings();
             this.renderUsageErrors();
+			this.renderHistory();
 			this.delegateEvents(this.events);
         },
 		makeMessageFunctions: function(options) {
@@ -827,6 +873,37 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 			
 			return timeFormat;
 		},
+        fetchAlertList: function(){
+            var self = this;
+			var alerts = '';
+            var alertList = [];
+            alertList = _.map(this.alertHistoryCollection.models, function(data) {
+                return data.attributes;
+            });
+            
+			alertList = _.sortBy(alertList, 'status');
+			var usageCount = this.collection.get('AlertRule').get('usage_warning');
+			
+			_.each(alertList, function(alert) {
+				var triggeredD = new Date(alert.triggered);
+				var resolvedD = new Date(alert.resolved);
+				
+				self.params.title = alert.event_message;
+				self.params.count = alert.usage !== undefined ? alert.usage : alert.count;
+				self.params.triggered = self.getTime(triggeredD);
+				self.params.resolved = self.getTime(resolvedD);
+				self.params.resolvedClass = alert.resolved ? 'show' : 'hidden';
+				self.params.titleCount = alert.usage !== undefined ? l10n.getSync('titleAlertUsageCount') : self.countTitles[alert.level];
+				self.params.cardClass = self.levelClasses[alert.level];
+				self.params.statusClass = self.statusClasses[alert.status];
+				self.params.statusPendingClass = alert.status === 'pending' ? 'show' : 'hidden';
+				self.params.statusResolvedClass = alert.status === 'resolved' ? 'show' : 'hidden';
+				
+				alerts += self.alertTemplate(self.params);
+			});
+			
+			this.ui.alerts.html(alerts);
+        },
 		twoDigits: function(format) {
 			return format < 10 ? '0' + format : format;
 		},
