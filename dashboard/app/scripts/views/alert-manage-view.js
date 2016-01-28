@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'models/user-info-model', 'collections/alert-rule-collection', 'marionette', 'bootstrap-switch', 'jquery.cookie'], function($, _, Backbone, JST, l10n, UserInfoModel, AlertRuleCollection) {
+define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{locale}}/strings', 'models/user-info-model', 'collections/alert-rule-collection', 'collections/alert-history-collection', 'marionette', 'bootstrap-switch', 'jquery.cookie'], function($, _, Backbone, JST, l10n, UserInfoModel, AlertRuleCollection, AlertHistoryCollection) {
     'use strict';
 
     var AlertManageView = Backbone.Marionette.ItemView.extend({
@@ -9,6 +9,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         optionTemplate: _.template('<option value="<%- count %>"><%- value %></option>"'),
         selectResetTemplate: _.template('select option[value="<%- id %>"]'),
         alertTemplate: JST['app/scripts/templates/alert-history.ejs'],
+        alertEmptyTemplate: JST['app/scripts/templates/alert-history-empty.ejs'],
 		
         xsrfCookieName: 'XSRF-TOKEN',
         xsrfHeaderName: 'X-XSRF-TOKEN',
@@ -150,6 +151,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 		
 		loadedCollection: false,
 		loadedUserInfoModel: false,
+		loadedAlertHistory: false,
 		
 		initialize: function() {
 			var self = this;
@@ -160,6 +162,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             }
             this.collection = new AlertRuleCollection();
 			this.userInfoModel = new UserInfoModel();
+			this.alertHistoryCollection = new AlertHistoryCollection();
 			
 			this.hours = _.range(24);
 			this.minutes = _.range(60);
@@ -180,12 +183,19 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				self.loadedUserInfoModel = true;
 				self.render();
 			});
+			this.listenTo(this.alertHistoryCollection, 'successOnFetch', function() {
+				self.loadedAlertHistory = true;
+				self.render();
+			});
 			
 			this.model.fetch().done(function () {
 				self.collection.getAlertRules();
 			});
 			this.userInfoModel.fetch().done(function () {
 				self.userInfoModel.getUserInfo();
+			});
+			this.alertHistoryCollection.fetch().done(function () {
+				self.alertHistoryCollection.getAlertHistorys();
 			});
 		},
         renderEmailSwitch: function() {
@@ -821,62 +831,11 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 		},
 		
 		renderHistory: function() {
-			var alertLists = [{
-				code: '013001',
-				status: 'pending',
-				level: 3,
-				count: 1,
-				triggered: 1452166800000
-			},{
-				code: '012001',
-				status: 'resolved',
-				level: 2,
-				count: 20,
-				triggered: 1452156000000,
-				resolved: 1453002000000
-			},{
-				code: '033001',
-				status: 'resolved',
-				level: 3,
-				count: 30,
-				triggered: 1456156000000,
-				resolved: 1463002000000
-			},{
-				code: '042001',
-				status: 'pending',
-				level: 2,
-				usage: 70,
-				triggered: 1456156000000
-			}];
-			
-			var self = this;
-			var alerts = '';
-			var alertList = _.sortBy(alertLists, 'status');
-			var usageCount = this.collection.get('AlertRule').get('usage_warning');
-			
-			_.each(alertList, function(alert) {
-				var triggeredD = new Date(alert.triggered);
-				var resolvedD = new Date(alert.resolved);
-				
-				self.params.title = l10n.getSync(self.alertCardTitleKeys[alert.code]);
-				self.params.count = alert.usage !== undefined ? alert.usage : alert.count;
-				self.params.triggered = self.getTime(triggeredD);
-				self.params.resolved = self.getTime(resolvedD);
-				self.params.resolvedClass = alert.resolved !== undefined ? 'show' : 'hidden';
-				self.params.titleCount = alert.usage !== undefined ? l10n.getSync('titleAlertUsageCount') : self.countTitles[alert.level];
-				self.params.cardClass = self.levelClasses[alert.level];
-				self.params.statusClass = self.statusClasses[alert.status];
-				self.params.statusPendingClass = alert.status === 'pending' ? 'show' : 'hidden';
-				self.params.statusResolvedClass = alert.status === 'resolved' ? 'show' : 'hidden';
-				
-				alerts += self.alertTemplate(self.params);
-			});
-			
-			this.ui.alerts.html(alerts);
+			this.alertHistoryCollection.models ? this.fetchAlertList() : this.ui.alerts.html(this.alertEmptyTemplate);
 		},
-		
+	    
 		renderWrapper: function(fn) {
-            if (!this.loadedCollection && !this.loadedUserInfoModel){ return; }
+            if (!this.loadedCollection && !this.loadedUserInfoModel && !this.loadedAlertHistory){ return; }
 			fn.call(this);
             this.renderEmailSwitch();
 			this.renderNormalStatusPeriod();
@@ -914,6 +873,37 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 			
 			return timeFormat;
 		},
+        fetchAlertList: function(){
+            var self = this;
+			var alerts = '';
+            var alertList = [];
+            alertList = _.map(this.alertHistoryCollection.models, function(data) {
+                return data.attributes;
+            });
+            
+			alertList = _.sortBy(alertList, 'status');
+			var usageCount = this.collection.get('AlertRule').get('usage_warning');
+			
+			_.each(alertList, function(alert) {
+				var triggeredD = new Date(alert.triggered);
+				var resolvedD = new Date(alert.resolved);
+				
+				self.params.title = alert.event_message;
+				self.params.count = alert.usage !== undefined ? alert.usage : alert.count;
+				self.params.triggered = self.getTime(triggeredD);
+				self.params.resolved = self.getTime(resolvedD);
+				self.params.resolvedClass = alert.resolved ? 'show' : 'hidden';
+				self.params.titleCount = alert.usage !== undefined ? l10n.getSync('titleAlertUsageCount') : self.countTitles[alert.level];
+				self.params.cardClass = self.levelClasses[alert.level];
+				self.params.statusClass = self.statusClasses[alert.status];
+				self.params.statusPendingClass = alert.status === 'pending' ? 'show' : 'hidden';
+				self.params.statusResolvedClass = alert.status === 'resolved' ? 'show' : 'hidden';
+				
+				alerts += self.alertTemplate(self.params);
+			});
+			
+			this.ui.alerts.html(alerts);
+        },
 		twoDigits: function(format) {
 			return format < 10 ? '0' + format : format;
 		},
