@@ -889,7 +889,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				var resolvedD = new Date(alert.resolved);
 				
 				self.params.title = alert.event_message;
-				self.params.count = alert.usage !== undefined ? alert.usage : alert.count;
+				self.params.count = alert.usage !== undefined ? alert.usage.toString() + '%' : alert.count;
+                self.params.count = alert.code.slice(1, 2) == 3 ? self.params.count.toString() + '%' : self.params.count;
 				self.params.triggered = self.getTime(triggeredD);
 				self.params.resolved = self.getTime(resolvedD);
 				self.params.resolvedClass = alert.resolved ? 'show' : 'hidden';
