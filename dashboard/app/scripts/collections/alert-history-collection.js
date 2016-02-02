@@ -6,7 +6,7 @@ define(['underscore', 'backbone', 'models/application-model'], function(_, Backb
         url: function() {
             return '/api/v1/user/me/alert_history' + this.limit + this.sort;
         },
-        limit: '?limit=99',
+        limit: '?limit=-1',
         sort: '&sort=rev',
         initialize: function(models, options) {
             if (options && options.cluster) {
