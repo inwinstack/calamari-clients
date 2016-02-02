@@ -827,10 +827,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             })).prop('selected', true);
         },
 		getUsageWarningsRange: function() {
-			this.collection.usageWarningsRange = _.range(5, this.collection.get('AlertRule').get('usage_error')+5, 5);
+			this.collection.usageWarningsRange = _.range(5, this.collection.get('AlertRule').get('usage_error'), 5);
 		},
 		getUsageErrorsRange: function() {
-			this.collection.usageErrorsRange = _.range(this.collection.get('AlertRule').get('usage_warning'), 90, 5);
+			this.collection.usageErrorsRange = _.range(this.collection.get('AlertRule').get('usage_warning')+5, 90, 5);
 		},
 		getOSDCounts: function() {
 			var osdcount = this.model.getOSDCounts();
