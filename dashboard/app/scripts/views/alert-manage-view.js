@@ -246,6 +246,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.normalHr,
 				min: this.collection.normalMin,
 				sec: this.collection.normalSec}));
+                
+            this.determineOption(this.collection.normalHr, this.collection.normalMin, this.collection.normalSec, 'Normal');
 		},
 		renderAbnormalStatusPeriod: function(){
 			var abnormalHr = this.renderoptionTemplate(this.hours, 'AbnormalHr');
@@ -270,6 +272,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.abnormalHr,
 				min: this.collection.abnormalMin,
 				sec: this.collection.abnormalSec}));
+                
+            this.determineOption(this.collection.abnormalHr, this.collection.abnormalMin, this.collection.abnormalSec, 'Abnormal');
 		},
 		renderServerStatusPeriod: function(){
 			var serverHr = this.renderoptionTemplate(this.hours, 'ServerHr');
@@ -294,6 +298,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.serverHr,
 				min: this.collection.serverMin,
 				sec: this.collection.serverSec}));
+                
+            this.determineOption(this.collection.serverHr, this.collection.serverMin, this.collection.serverSec, 'Server');
 		},
 		
 		renderOSDWarnings: function() {
@@ -557,6 +563,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.normalHr,
 				min: this.collection.normalMin,
 				sec: this.collection.normalSec}));
+                
+            this.determineOption(this.collection.normalHr, this.collection.normalMin, this.collection.normalSec, 'Normal');
 			
 			return $.ajax({
 				url: this.updateNormalStatusPeriodUrl,
@@ -583,7 +591,9 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.normalHr,
 				min: this.collection.normalMin,
 				sec: this.collection.normalSec}));
-			
+                
+            this.determineOption(this.collection.normalHr, this.collection.normalMin, this.collection.normalSec, 'Normal');
+            
 			return $.ajax({
 				url: this.updateNormalStatusPeriodUrl,
 				type: 'POST',
@@ -609,6 +619,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.normalHr,
 				min: this.collection.normalMin,
 				sec: this.collection.normalSec}));
+                
+            this.determineOption(this.collection.normalHr, this.collection.normalMin, this.collection.normalSec, 'Normal');
 			
 			return $.ajax({
 				url: this.updateNormalStatusPeriodUrl,
@@ -635,6 +647,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.abnormalHr,
 				min: this.collection.abnormalMin,
 				sec: this.collection.abnormalSec}));
+                
+            this.determineOption(this.collection.abnormalHr, this.collection.abnormalMin, this.collection.abnormalSec, 'Abnormal');
 			
 			return $.ajax({
 				url: this.updateAbnormalStatusPeriodUrl,
@@ -661,6 +675,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.abnormalHr,
 				min: this.collection.abnormalMin,
 				sec: this.collection.abnormalSec}));
+                
+            this.determineOption(this.collection.abnormalHr, this.collection.abnormalMin, this.collection.abnormalSec, 'Abnormal');
 			
 			return $.ajax({
 				url: this.updateAbnormalStatusPeriodUrl,
@@ -687,6 +703,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.abnormalHr,
 				min: this.collection.abnormalMin,
 				sec: this.collection.abnormalSec}));
+                
+            this.determineOption(this.collection.abnormalHr, this.collection.abnormalMin, this.collection.abnormalSec, 'Abnormal');
 			
 			return $.ajax({
 				url: this.updateAbnormalStatusPeriodUrl,
@@ -713,6 +731,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.serverHr,
 				min: this.collection.serverMin,
 				sec: this.collection.serverSec}));
+                
+            this.determineOption(this.collection.serverHr, this.collection.serverMin, this.collection.serverSec, 'Server');
 			
 			return $.ajax({
 				url: this.updateAbnormalServerPeriodUrl,
@@ -739,6 +759,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.serverHr,
 				min: this.collection.serverMin,
 				sec: this.collection.serverSec}));
+                
+            this.determineOption(this.collection.serverHr, this.collection.serverMin, this.collection.serverSec, 'Server');
 			
 			return $.ajax({
 				url: this.updateAbnormalServerPeriodUrl,
@@ -765,6 +787,8 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.serverHr,
 				min: this.collection.serverMin,
 				sec: this.collection.serverSec}));
+                
+            this.determineOption(this.collection.serverHr, this.collection.serverMin, this.collection.serverSec, 'Server');
 			
 			return $.ajax({
 				url: this.updateAbnormalServerPeriodUrl,
@@ -803,10 +827,10 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             })).prop('selected', true);
         },
 		getUsageWarningsRange: function() {
-			this.collection.usageWarningsRange = _.range(5, this.collection.get('AlertRule').get('usage_error')+5, 5);
+			this.collection.usageWarningsRange = _.range(5, this.collection.get('AlertRule').get('usage_error'), 5);
 		},
 		getUsageErrorsRange: function() {
-			this.collection.usageErrorsRange = _.range(this.collection.get('AlertRule').get('usage_warning'), 90, 5);
+			this.collection.usageErrorsRange = _.range(this.collection.get('AlertRule').get('usage_warning')+5, 90, 5);
 		},
 		getOSDCounts: function() {
 			var osdcount = this.model.getOSDCounts();
@@ -851,6 +875,31 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
             this.renderUsageErrors();
 			this.renderHistory();
 			this.delegateEvents(this.events);
+        },
+        determineOption: function(hr, min, sec, value) {
+            if(hr == 0 && min == 0) {
+                this.disabledOption(value + 'Sec0');
+                return;
+            }
+            if(hr == 0 && sec == 0) {
+                this.disabledOption(value + 'Min0');
+                return;
+            }
+            if(min == 0 && sec == 0) {
+                this.disabledOption(value + 'Hr0');
+                return;
+            }
+            this.enabledOption(value + 'Sec0');
+            this.enabledOption(value + 'Min0');
+            this.enabledOption(value + 'Hr0');
+        },
+        disabledOption: function(value) {
+            var param = 'option[value="' + value + '"]'
+            $(param).attr('disabled', 'disabled');
+        },
+        enabledOption: function(value) {
+            var param = 'option[value="' + value + '"]'
+            $(param).removeAttr('disabled');
         },
 		makeMessageFunctions: function(options) {
 			this[options.fn] = function () {
@@ -907,9 +956,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         },
 		twoDigits: function(format) {
 			return format < 10 ? '0' + format : format;
-		},
-		showUsageMessage: function() {
-			
 		},
 		switchHistoryPage: function() {
 			this.$el.find('#alert-settings').addClass('hidden');
