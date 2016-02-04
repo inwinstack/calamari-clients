@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 		
         template: JST['app/scripts/templates/alert-manage.ejs'],
         selectTemplate: _.template('<select class="form-control" name="<%= name %>"><%= list %></select>'),
-        optionTemplate: _.template('<option value="<%- count %>"><%- value %></option>"'),
+        optionTemplate: _.template('<option value="<%- count %>" <%- disabled %> ><%- value %></option>"'),
         selectResetTemplate: _.template('select option[value="<%- id %>"]'),
         alertTemplate: JST['app/scripts/templates/alert-history.ejs'],
         alertEmptyTemplate: JST['app/scripts/templates/alert-history-empty.ejs'],
@@ -224,19 +224,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         },
 		
 		renderNormalStatusPeriod: function(){
-			var normalHr = this.renderoptionTemplate(this.hours, 'NormalHr');
-			var normalMin = this.renderoptionTemplate(this.minutes, 'NormalMin');
-			var normalSec = this.renderoptionTemplate(this.seconds, 'NormalSec');
-			
-			this.renderSelectTemplate(this.ui.normalHrSelect, normalHr, 'normalHr');
-			this.renderSelectTemplate(this.ui.normalMinSelect, normalMin, 'normalMin');
-			this.renderSelectTemplate(this.ui.normalSecSelect, normalSec, 'normalSec');
-			
 			var GeneralPolling = this.collection.pluck('general_polling');
 			
 			this.collection.normalHr = Math.floor(GeneralPolling / 3600);
 			this.collection.normalMin = Math.floor((GeneralPolling - (this.collection.normalHr * 3600)) / 60);
 			this.collection.normalSec = parseInt(GeneralPolling - (this.collection.normalHr * 3600) - (this.collection.normalMin * 60));
+            
+            var select = this.determineOption(this.collection.normalHr, this.collection.normalMin, this.collection.normalSec, 'Normal');
+            
+			var normalHr = this.renderoptionTemplate(this.hours, 'NormalHr', select);
+			var normalMin = this.renderoptionTemplate(this.minutes, 'NormalMin', select);
+			var normalSec = this.renderoptionTemplate(this.seconds, 'NormalSec', select);
+			
+			this.renderSelectTemplate(this.ui.normalHrSelect, normalHr, 'normalHr');
+			this.renderSelectTemplate(this.ui.normalMinSelect, normalMin, 'normalMin');
+			this.renderSelectTemplate(this.ui.normalSecSelect, normalSec, 'normalSec');
 			
 			this.updateSelect('NormalHr' + this.collection.normalHr);
 			this.updateSelect('NormalMin' + this.collection.normalMin);
@@ -246,23 +248,23 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.normalHr,
 				min: this.collection.normalMin,
 				sec: this.collection.normalSec}));
-                
-            this.determineOption(this.collection.normalHr, this.collection.normalMin, this.collection.normalSec, 'Normal');
 		},
 		renderAbnormalStatusPeriod: function(){
-			var abnormalHr = this.renderoptionTemplate(this.hours, 'AbnormalHr');
-			var abnormalMin = this.renderoptionTemplate(this.minutes, 'AbnormalMin');
-			var abnormalSec = this.renderoptionTemplate(this.seconds, 'AbnormalSec');
-			
-			this.renderSelectTemplate(this.ui.abnormalHrSelect, abnormalHr, 'abnormalHr');
-			this.renderSelectTemplate(this.ui.abnormalMinSelect, abnormalMin, 'abnormalMin');
-			this.renderSelectTemplate(this.ui.abnormalSecSelect, abnormalSec, 'abnormalSec');
-			
 			var GeneralPolling = this.collection.pluck('abnormal_state_polling');
 			
 			this.collection.abnormalHr = Math.floor(GeneralPolling / 3600);
 			this.collection.abnormalMin = Math.floor((GeneralPolling - (this.collection.abnormalHr * 3600)) / 60);
 			this.collection.abnormalSec = parseInt(GeneralPolling - (this.collection.abnormalHr * 3600) - (this.collection.abnormalMin * 60));
+            
+            var select = this.determineOption(this.collection.abnormalHr, this.collection.abnormalMin, this.collection.abnormalSec, 'Abnormal');
+            
+			var abnormalHr = this.renderoptionTemplate(this.hours, 'AbnormalHr', select);
+			var abnormalMin = this.renderoptionTemplate(this.minutes, 'AbnormalMin', select);
+			var abnormalSec = this.renderoptionTemplate(this.seconds, 'AbnormalSec', select);
+			
+			this.renderSelectTemplate(this.ui.abnormalHrSelect, abnormalHr, 'abnormalHr');
+			this.renderSelectTemplate(this.ui.abnormalMinSelect, abnormalMin, 'abnormalMin');
+			this.renderSelectTemplate(this.ui.abnormalSecSelect, abnormalSec, 'abnormalSec');
 			
 			this.updateSelect('AbnormalHr' + this.collection.abnormalHr);
 			this.updateSelect('AbnormalMin' + this.collection.abnormalMin);
@@ -272,23 +274,23 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.abnormalHr,
 				min: this.collection.abnormalMin,
 				sec: this.collection.abnormalSec}));
-                
-            this.determineOption(this.collection.abnormalHr, this.collection.abnormalMin, this.collection.abnormalSec, 'Abnormal');
 		},
 		renderServerStatusPeriod: function(){
-			var serverHr = this.renderoptionTemplate(this.hours, 'ServerHr');
-			var serverMin = this.renderoptionTemplate(this.minutes, 'ServerMin');
-			var serverSec = this.renderoptionTemplate(this.seconds, 'ServerSec');
-			
-			this.renderSelectTemplate(this.ui.serverHrSelect, serverHr, 'serverHr');
-			this.renderSelectTemplate(this.ui.serverMinSelect, serverMin, 'serverMin');
-			this.renderSelectTemplate(this.ui.serverSecSelect, serverSec, 'serverSec');
-			
 			var GeneralPolling = this.collection.pluck('abnormal_server_state_polling');
 			
 			this.collection.serverHr = Math.floor(GeneralPolling / 3600);
 			this.collection.serverMin = Math.floor((GeneralPolling - (this.collection.serverHr * 3600)) / 60);
 			this.collection.serverSec = parseInt(GeneralPolling - (this.collection.serverHr * 3600) - (this.collection.serverMin * 60));
+            
+            var select = this.determineOption(this.collection.serverHr, this.collection.serverMin, this.collection.serverSec, 'Server');
+            
+			var serverHr = this.renderoptionTemplate(this.hours, 'ServerHr', select);
+			var serverMin = this.renderoptionTemplate(this.minutes, 'ServerMin', select);
+			var serverSec = this.renderoptionTemplate(this.seconds, 'ServerSec', select);
+			
+			this.renderSelectTemplate(this.ui.serverHrSelect, serverHr, 'serverHr');
+			this.renderSelectTemplate(this.ui.serverMinSelect, serverMin, 'serverMin');
+			this.renderSelectTemplate(this.ui.serverSecSelect, serverSec, 'serverSec');
 			
 			this.updateSelect('ServerHr' + this.collection.serverHr);
 			this.updateSelect('ServerMin' + this.collection.serverMin);
@@ -298,8 +300,6 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				hr: this.collection.serverHr,
 				min: this.collection.serverMin,
 				sec: this.collection.serverSec}));
-                
-            this.determineOption(this.collection.serverHr, this.collection.serverMin, this.collection.serverSec, 'Server');
 		},
 		
 		renderOSDWarnings: function() {
@@ -810,12 +810,21 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 				name: name
             }));
 		},
-		renderoptionTemplate: function(lists, id) {
+		renderoptionTemplate: function(lists, id, select) {
 			var opts = _.reduce(lists, function(memo, list) {
-                return memo + this.optionTemplate({
+                if(id == select && list == 0) {
+                    return memo + this.optionTemplate({
                     count: id + list,
-					value: list
-                });
+					value: list,
+                    disabled: 'disabled'
+                    });
+                } else{
+                    return memo + this.optionTemplate({
+                        count: id + list,
+                        value: list,
+                        disabled: ''
+                    });
+                }
             }, '', this);
 			
 			return opts;
@@ -826,7 +835,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
                 id: id
             })).prop('selected', true);
         },
-		getUsageWarningsRange: function() {
+        getUsageWarningsRange: function() {
 			this.collection.usageWarningsRange = _.range(5, this.collection.get('AlertRule').get('usage_error'), 5);
 		},
 		getUsageErrorsRange: function() {
@@ -859,7 +868,7 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
 		},
 	    
 		renderWrapper: function(fn) {
-            if (!this.loadedCollection && !this.loadedUserInfoModel && !this.loadedAlertHistory){ return; }
+            if (!this.loadedCollection || !this.loadedUserInfoModel || !this.loadedAlertHistory){ return; }
 			fn.call(this);
             this.renderEmailSwitch();
 			this.renderNormalStatusPeriod();
@@ -878,28 +887,28 @@ define(['jquery', 'underscore', 'backbone', 'templates', 'l20nCtx!locales/{{loca
         },
         determineOption: function(hr, min, sec, value) {
             if(hr == 0 && min == 0) {
-                this.disabledOption(value + 'Sec0');
-                return;
+                this.disableOption(value + 'Sec0');
+                return value + 'Sec';
             }
             if(hr == 0 && sec == 0) {
-                this.disabledOption(value + 'Min0');
-                return;
+                this.disableOption(value + 'Min0');
+                return value + 'Min';
             }
             if(min == 0 && sec == 0) {
-                this.disabledOption(value + 'Hr0');
-                return;
+                this.disableOption(value + 'Hr0');
+                return value + 'Hr';
             }
-            this.enabledOption(value + 'Sec0');
-            this.enabledOption(value + 'Min0');
-            this.enabledOption(value + 'Hr0');
+            this.enableOption(value + 'Sec0');
+            this.enableOption(value + 'Min0');
+            this.enableOption(value + 'Hr0');
         },
-        disabledOption: function(value) {
-            var param = 'option[value="' + value + '"]'
-            $(param).attr('disabled', 'disabled');
+        disableOption: function(value) {
+            var select = 'option[value="' + value + '"]';
+            $(select).attr('disabled', 'disabled');
         },
-        enabledOption: function(value) {
-            var param = 'option[value="' + value + '"]'
-            $(param).removeAttr('disabled');
+        enableOption: function(value) {
+            var select = 'option[value="' + value + '"]';
+            $(select).removeAttr('disabled');
         },
 		makeMessageFunctions: function(options) {
 			this[options.fn] = function () {
